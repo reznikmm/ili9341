@@ -1,0 +1,40 @@
+name = "ili9341"
+description = "Driver for ILI9341 display"
+version = "0.1.0"
+
+authors = ["Max Reznik"]
+maintainers = ["Max Reznik <reznikmm@gmail.com>"]
+maintainers-logins = ["reznikmm"]
+licenses = "Apache-2.0 WITH LLVM-exception"
+website = "https://github.com/reznikmm/ili9341"
+tags = ["driver", "display"]
+project-files = ["gnat/ili9341.gpr"]
+
+long-description = '''
+# Driver for ILI9341 display.
+
+The ILI9341 driver enables the following functionalities:
+
+- TBD
+
+The driver supports usage both with and without the Ada Driver Library,
+either via generic instantiation or by instantiating tagged type object.
+
+More drivers in this style:
+[driver index](https://github.com/reznikmm/reznikmm/blob/main/drivers.md).
+'''
+
+[configuration]
+output_dir = "gnat"
+generate_ada = false
+generate_c = false
+
+[build-switches]
+development.optimization = ["-O0"]
+development.style_checks = ["-gnaty"]
+development.contracts = "Yes"
+"*".debug_info = "Yes"
+
+[[depends-on]]
+hal = "~0.3 | ^1"
+gnat = ">=11 & <2000" # Uses Ada 2022 syntax
