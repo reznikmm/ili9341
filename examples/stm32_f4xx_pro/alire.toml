@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: 2025 Max Reznik <reznikmm@gmail.com>
+#
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+name = "stm32_f4xx_pro"
+description = "Demo on STM32 F4XX Pro board"
+version = "0.1.0-dev"
+
+authors = ["Max Reznik"]
+maintainers = ["Max Reznik <reznikmm@gmail.com>"]
+maintainers-logins = ["reznikmm"]
+licenses = "Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+[[depends-on]]
+gnat_arm_elf = "*"
+ili9341 = "*"
+aa_stm32_drivers = "*"
+
+[[pins]]
+ili9341 = { path='../..' }
+aa_stm32_drivers = { url='https://github.com/reznikmm/aa_stm32_drivers' }
+
+[configuration.values]
+aa_stm32_drivers.aa_mcu = "stm32f4"

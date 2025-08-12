@@ -18,7 +18,7 @@ jobs:
     - uses: alire-project/setup-alire@v5
     - name: Build project
       run: alr build
-#    - name: Build examples
-#      run: |
-#        cd examples
-#        alr build
+    - name: Build examples
+      run: |
+        cd examples/stm32_f4xx_pro
+        alr build
