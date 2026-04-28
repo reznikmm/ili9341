@@ -75,6 +75,10 @@ Run Alire to build:
 
     alr -C examples/stm32_f4xx_pro build
 
+There is same example for
+[STM32 F4VE](https://stm32-base.org/boards/STM32F407VET6-STM32-F4VE-V2.0.html)
+board also.
+
 ### GNAT Studio
 
 Launch GNAT Studio with Alire:

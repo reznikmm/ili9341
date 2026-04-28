@@ -1,7 +1,7 @@
---  SPDX-FileCopyrightText: 2025 Max Reznik <reznikmm@gmail.com>
+--  SPDX-FileCopyrightText: 2025-2026 Max Reznik <reznikmm@gmail.com>
 --
 --  SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-----------------------------------------------------------------
+---------------------------------------------------------------------
 pragma Ada_2022;
 
 package ILI9341.Raw is
@@ -25,10 +25,10 @@ package ILI9341.Raw is
    subtype Command_5P is Command (5);
 
    function MSB (Value : Interfaces.Unsigned_16) return Byte is
-      (Byte (Value / 256));
+      (Byte (Value / 256)) with Static;
 
    function LSB (Value : Interfaces.Unsigned_16) return Byte is
-      (Byte (Value and 16#FF#));
+      (Byte (Value and 16#FF#)) with Static;
 
    function Column_Address_Set
      (SC : Interfaces.Unsigned_16;

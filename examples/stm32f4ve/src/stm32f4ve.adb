@@ -1,4 +1,4 @@
---  SPDX-FileCopyrightText: 2025 Max Reznik <reznikmm@gmail.com>
+--  SPDX-FileCopyrightText: 2026 Max Reznik <reznikmm@gmail.com>
 --
 --  SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 ----------------------------------------------------------------
@@ -11,22 +11,22 @@ with STM32.FSMC;
 
 with ILI9341.Bus_16_II;
 
-procedure Stm32_F4xx_Pro is
+procedure Stm32f4ve is
    use type System.Storage_Elements.Storage_Offset;
 
    Data : Interfaces.Unsigned_16
      with
        Import,
-       Address => STM32.FSMC.Bank_1_Start (Subbank => 4) + 2**7,
+       Address => STM32.FSMC.Bank_1_Start (Subbank => 1) + 2**19,
        --  Address => System'To_Address (16#6C00_0080#),
        Volatile;
 
    package TFT is new ILI9341.Bus_16_II
-     (Command => STM32.FSMC.Bank_1_Start (Subbank => 4),
+     (Command => STM32.FSMC.Bank_1_Start (Subbank => 1),
       Data    => Data'Address);
 
-   LED : constant STM32.Pin := (STM32.PF, 9);
-   LCD_Back_Light : constant STM32.Pin := (STM32.PB, 15);
+   LED : constant STM32.Pin := (STM32.PA, 6);
+   LCD_Back_Light : constant STM32.Pin := (STM32.PB, 1);
 
    FSMC : constant STM32.Pin_Array :=
      ((STM32.PD, 14), (STM32.PD, 15), (STM32.PD, 0), (STM32.PD, 1),
@@ -34,9 +34,9 @@ procedure Stm32_F4xx_Pro is
       (STM32.PE, 11), (STM32.PE, 12), (STM32.PE, 13), (STM32.PE, 14),
       (STM32.PE, 15), (STM32.PD, 8),  (STM32.PD, 9), (STM32.PD, 10),
       --  Data pins (D0 .. D15)
-      (STM32.PF, 12),  --  A6
+      (STM32.PD, 13),  --  A18
       --  Only one address pin is connected to the TFT header
-      (STM32.PG, 12),  --  NE4, Chip select pin for TFT LCD
+      (STM32.PD, 7),   --  NE1, Chip select pin for TFT LCD
       (STM32.PD, 4),   --  NOE, Output enable pin
       (STM32.PD, 5));  --  NWE, Write enable pin
 
@@ -45,7 +45,7 @@ begin
 
    STM32.FSMC.Configure
      (Bank_1 =>
-        (4 =>  --  TFT is connected to sub-bank 4
+        (1 =>  --  TFT is connected to sub-bank 1
            (Is_Set => True,
             Value  =>
               (Write_Enable  => True,
@@ -81,4 +81,4 @@ begin
       STM32.GPIO.Set_Output (LED, STM32.Bit (J mod 2));
       delay 1.0;
    end loop;
-end Stm32_F4xx_Pro;
+end Stm32f4ve;
