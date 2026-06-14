@@ -1,0 +1,24 @@
+name = "stm32f429_disc"
+description = "Example for STM32F429 Discovery"
+version = "0.1.0-dev"
+
+authors = ["Max Reznik"]
+maintainers = ["Max Reznik <reznikmm@gmail.com>"]
+maintainers-logins = ["reznikmm"]
+licenses = "Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+executables = ["stm32f429_disc"]
+
+[[depends-on]]
+gnat_arm_elf = "*"
+ili9341 = "*"
+aa_stm32_drivers = "*"
+
+[[pins]]
+ili9341 = { path='../..' }
+aa_stm32_drivers = { url='https://github.com/reznikmm/aa_stm32_drivers' }
+
+[configuration.values]
+aa_stm32_drivers.aa_mcu = "stm32f429disco"

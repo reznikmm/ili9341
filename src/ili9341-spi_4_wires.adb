@@ -6,7 +6,7 @@
 with ILI9341.Implementation;
 with ILI9341.Raw;
 
-package body ILI9341.Bus_16_II is
+package body ILI9341.SPI_4_Wires is
 
    procedure Send_Command (Item : ILI9341.Raw.Command)
      with Inline;
@@ -90,17 +90,16 @@ package body ILI9341.Bus_16_II is
    ------------------
 
    procedure Send_Command (Item : ILI9341.Raw.Command) is
-      Cmd : Interfaces.Unsigned_16
-        with Import, Address => Command, Volatile;
-
-      RAM : Interfaces.Unsigned_16
-        with Import, Address => Data, Volatile;
    begin
-      Cmd := Interfaces.Unsigned_16 (Item.Command);
+      Set_Data_Or_Command (Data => False);
+      Send_Byte (Item.Command);
+      Set_Data_Or_Command (Data => True);
 
       for Parameter of Item.Parameters loop
-         RAM := Interfaces.Unsigned_16 (Parameter);
+         Send_Byte (Parameter);
       end loop;
+
+      Done;
    end Send_Command;
 
    --------------
@@ -127,4 +126,4 @@ package body ILI9341.Bus_16_II is
 
    procedure Write_Memory renames Real.Write_Memory;
 
-end ILI9341.Bus_16_II;
+end ILI9341.SPI_4_Wires;
