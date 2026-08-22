@@ -21,6 +21,27 @@ package body ILI9341.Bus_16_II is
      (SC : Interfaces.Unsigned_16;
       EC : Interfaces.Unsigned_16) renames Real.Column_Address_Set;
 
+   -------------------------------
+   -- Display_Function_Control --
+   -------------------------------
+
+   procedure Display_Function_Control
+     (P1 : Byte;
+      P2 : Byte;
+      P3 : Byte) renames Real.Display_Function_Control;
+
+   ----------------------------
+   -- Display_Inversion_Off --
+   ----------------------------
+
+   procedure Display_Inversion_Off renames Real.Display_Inversion_Off;
+
+   ---------------------------
+   -- Display_Inversion_On --
+   ---------------------------
+
+   procedure Display_Inversion_On renames Real.Display_Inversion_On;
+
    -----------------
    -- Display_Off --
    -----------------
@@ -53,6 +74,47 @@ package body ILI9341.Bus_16_II is
       T3 : Zero_To_3  := 0;
       T4 : Zero_To_3  := 0) renames Real.Driver_Timing_Control_B;
 
+   --------------------------------
+   -- Frame_Rate_Control_Normal --
+   --------------------------------
+
+   procedure Frame_Rate_Control_Normal
+     (DIVA : Frame_Rate_Division := 0;
+      RTNA : Frame_Rate_Clocks   := 27) renames Real.Frame_Rate_Control_Normal;
+
+   ----------------------------
+   -- Gamma_Function_Enable --
+   ----------------------------
+
+   procedure Gamma_Function_Enable
+     (Enable : Boolean := False) renames Real.Gamma_Function_Enable;
+
+   ---------------
+   -- Gamma_Set --
+   ---------------
+
+   procedure Gamma_Set
+     (Curve : Gamma_Curve := Curve_1) renames Real.Gamma_Set;
+
+   ------------------------------
+   -- Memory_Access_Control --
+   ------------------------------
+
+   procedure Memory_Access_Control
+     (MY  : Boolean := False;
+      MX  : Boolean := False;
+      MV  : Boolean := False;
+      ML  : Boolean := False;
+      BGR : Boolean := False;
+      MH  : Boolean := False) renames Real.Memory_Access_Control;
+
+   --------------------------------
+   -- Negative_Gamma_Correction --
+   --------------------------------
+
+   procedure Negative_Gamma_Correction
+     (Table : Gamma_Correction_Table) renames Real.Negative_Gamma_Correction;
+
    ----------------------
    -- Page_Address_Set --
    ----------------------
@@ -69,6 +131,25 @@ package body ILI9341.Bus_16_II is
      (DPI : Bits_Per_Pixel := 18;
       DBI : Bits_Per_Pixel := 18) renames Real.Pixel_Format_Set;
 
+   --------------------------------
+   -- Positive_Gamma_Correction --
+   --------------------------------
+
+   procedure Positive_Gamma_Correction
+     (Table : Gamma_Correction_Table) renames Real.Positive_Gamma_Correction;
+
+   ---------------------
+   -- Power_Control_1 --
+   ---------------------
+
+   procedure Power_Control_1 (VRH : Byte) renames Real.Power_Control_1;
+
+   ---------------------
+   -- Power_Control_2 --
+   ---------------------
+
+   procedure Power_Control_2 (BT : Byte) renames Real.Power_Control_2;
+
    ---------------------
    -- Power_Control_A --
    ---------------------
@@ -84,6 +165,12 @@ package body ILI9341.Bus_16_II is
    procedure Power_Control_B
      (PCEQ : Boolean := False;
       DRV  : Boolean := False) renames Real.Power_Control_B;
+
+   -------------------------
+   -- Pump_Ratio_Control --
+   -------------------------
+
+   procedure Pump_Ratio_Control (Ratio : Byte) renames Real.Pump_Ratio_Control;
 
    ------------------
    -- Send_Command --
@@ -120,6 +207,20 @@ package body ILI9341.Bus_16_II is
    --------------------
 
    procedure Software_Reset renames Real.Software_Reset;
+
+   ----------------------
+   -- VCOM_Control_1 --
+   ----------------------
+
+   procedure VCOM_Control_1
+     (VMH : Byte;
+      VML : Byte) renames Real.VCOM_Control_1;
+
+   ----------------------
+   -- VCOM_Control_2 --
+   ----------------------
+
+   procedure VCOM_Control_2 (VMF : Byte) renames Real.VCOM_Control_2;
 
    ------------------
    -- Write_Memory --

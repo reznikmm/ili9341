@@ -148,4 +148,73 @@ package ILI9341.Bus_16_II is
    --  @param T3 - EQ to DDVDH
    --  @param T4 - EQ to GND
 
+   procedure Pump_Ratio_Control (Ratio : Byte);
+   --  Sets the ratio factor used by the step-up circuit that generates
+   --  VGH/VGL. Raw register byte -- see ILI9341.Raw.Pump_Ratio_Control.
+
+   procedure Power_Control_1 (VRH : Byte);
+   --  Sets the GVDD reference level (VRH[5:0]). Raw register byte --
+   --  see ILI9341.Raw.Power_Control_1.
+
+   procedure Power_Control_2 (BT : Byte);
+   --  Sets the step-up circuit factor (SAP[2:0]:BT[3:0]). Raw
+   --  register byte -- see ILI9341.Raw.Power_Control_2.
+
+   procedure VCOM_Control_1
+     (VMH : Byte;
+      VML : Byte);
+   --  Sets the VCOMH/VCOML voltages. Raw register bytes -- see
+   --  ILI9341.Raw.VCOM_Control_1.
+
+   procedure VCOM_Control_2 (VMF : Byte);
+   --  Sets the VCOM offset voltage. Raw register byte -- see
+   --  ILI9341.Raw.VCOM_Control_2.
+
+   procedure Memory_Access_Control
+     (MY  : Boolean := False;
+      MX  : Boolean := False;
+      MV  : Boolean := False;
+      ML  : Boolean := False;
+      BGR : Boolean := False;
+      MH  : Boolean := False);
+   --  Sets row/column address order, row/column exchange, refresh
+   --  order and RGB/BGR pixel order -- see
+   --  ILI9341.Raw.Memory_Access_Control.
+
+   procedure Frame_Rate_Control_Normal
+     (DIVA : Frame_Rate_Division := 0;
+      RTNA : Frame_Rate_Clocks   := 27);
+   --  Sets the normal-mode frame rate -- see
+   --  ILI9341.Raw.Frame_Rate_Control_Normal.
+
+   procedure Display_Function_Control
+     (P1 : Byte;
+      P2 : Byte;
+      P3 : Byte);
+   --  Raw register bytes -- see ILI9341.Raw.Display_Function_Control.
+
+   procedure Gamma_Function_Enable (Enable : Boolean := False);
+   --  Enables/disables the interpolated 3-gamma curve -- see
+   --  ILI9341.Raw.Gamma_Function_Enable.
+
+   procedure Gamma_Set (Curve : Gamma_Curve := Curve_1);
+   --  Selects one of the 4 predefined gamma curves -- see
+   --  ILI9341.Raw.Gamma_Set.
+
+   procedure Positive_Gamma_Correction (Table : Gamma_Correction_Table);
+   --  Sets the positive-polarity gamma curve -- see
+   --  ILI9341.Raw.Positive_Gamma_Correction.
+
+   procedure Negative_Gamma_Correction (Table : Gamma_Correction_Table);
+   --  Sets the negative-polarity gamma curve -- see
+   --  ILI9341.Raw.Negative_Gamma_Correction.
+
+   procedure Display_Inversion_On;
+   --  Enters display inversion mode -- see
+   --  ILI9341.Raw.Display_Inversion_On.
+
+   procedure Display_Inversion_Off;
+   --  Recovers from display inversion mode -- see
+   --  ILI9341.Raw.Display_Inversion_Off.
+
 end ILI9341.Bus_16_II;

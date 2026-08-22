@@ -18,6 +18,36 @@ package body ILI9341.Implementation is
       Send_Command (Raw.Column_Address_Set (SC, EC));
    end Column_Address_Set;
 
+   -------------------------------
+   -- Display_Function_Control --
+   -------------------------------
+
+   procedure Display_Function_Control
+     (P1 : Byte;
+      P2 : Byte;
+      P3 : Byte) is
+   begin
+      Send_Command (Raw.Display_Function_Control (P1, P2, P3));
+   end Display_Function_Control;
+
+   ----------------------------
+   -- Display_Inversion_Off --
+   ----------------------------
+
+   procedure Display_Inversion_Off is
+   begin
+      Send_Command (Raw.Display_Inversion_Off);
+   end Display_Inversion_Off;
+
+   ---------------------------
+   -- Display_Inversion_On --
+   ---------------------------
+
+   procedure Display_Inversion_On is
+   begin
+      Send_Command (Raw.Display_Inversion_On);
+   end Display_Inversion_On;
+
    -----------------
    -- Display_Off --
    -----------------
@@ -62,6 +92,59 @@ package body ILI9341.Implementation is
       Send_Command (Raw.Driver_Timing_Control_B (T1, T2, T3, T4));
    end Driver_Timing_Control_B;
 
+   --------------------------------
+   -- Frame_Rate_Control_Normal --
+   --------------------------------
+
+   procedure Frame_Rate_Control_Normal
+     (DIVA : Frame_Rate_Division := 0;
+      RTNA : Frame_Rate_Clocks   := 27) is
+   begin
+      Send_Command (Raw.Frame_Rate_Control_Normal (DIVA, RTNA));
+   end Frame_Rate_Control_Normal;
+
+   ----------------------------
+   -- Gamma_Function_Enable --
+   ----------------------------
+
+   procedure Gamma_Function_Enable (Enable : Boolean := False) is
+   begin
+      Send_Command (Raw.Gamma_Function_Enable (Enable));
+   end Gamma_Function_Enable;
+
+   ---------------
+   -- Gamma_Set --
+   ---------------
+
+   procedure Gamma_Set (Curve : Gamma_Curve := Curve_1) is
+   begin
+      Send_Command (Raw.Gamma_Set (Curve));
+   end Gamma_Set;
+
+   ------------------------------
+   -- Memory_Access_Control --
+   ------------------------------
+
+   procedure Memory_Access_Control
+     (MY  : Boolean := False;
+      MX  : Boolean := False;
+      MV  : Boolean := False;
+      ML  : Boolean := False;
+      BGR : Boolean := False;
+      MH  : Boolean := False) is
+   begin
+      Send_Command (Raw.Memory_Access_Control (MY, MX, MV, ML, BGR, MH));
+   end Memory_Access_Control;
+
+   --------------------------------
+   -- Negative_Gamma_Correction --
+   --------------------------------
+
+   procedure Negative_Gamma_Correction (Table : Gamma_Correction_Table) is
+   begin
+      Send_Command (Raw.Negative_Gamma_Correction (Table));
+   end Negative_Gamma_Correction;
+
    ----------------------
    -- Page_Address_Set --
    ----------------------
@@ -84,6 +167,33 @@ package body ILI9341.Implementation is
       Send_Command (Raw.Pixel_Format_Set (DBI => DBI, DPI => DPI));
    end Pixel_Format_Set;
 
+   --------------------------------
+   -- Positive_Gamma_Correction --
+   --------------------------------
+
+   procedure Positive_Gamma_Correction (Table : Gamma_Correction_Table) is
+   begin
+      Send_Command (Raw.Positive_Gamma_Correction (Table));
+   end Positive_Gamma_Correction;
+
+   ---------------------
+   -- Power_Control_1 --
+   ---------------------
+
+   procedure Power_Control_1 (VRH : Byte) is
+   begin
+      Send_Command (Raw.Power_Control_1 (VRH));
+   end Power_Control_1;
+
+   ---------------------
+   -- Power_Control_2 --
+   ---------------------
+
+   procedure Power_Control_2 (BT : Byte) is
+   begin
+      Send_Command (Raw.Power_Control_2 (BT));
+   end Power_Control_2;
+
    ---------------------
    -- Power_Control_A --
    ---------------------
@@ -105,6 +215,15 @@ package body ILI9341.Implementation is
    begin
       Send_Command (Raw.Power_Control_B (PCEQ, DRV));
    end Power_Control_B;
+
+   -------------------------
+   -- Pump_Ratio_Control --
+   -------------------------
+
+   procedure Pump_Ratio_Control (Ratio : Byte) is
+   begin
+      Send_Command (Raw.Pump_Ratio_Control (Ratio));
+   end Pump_Ratio_Control;
 
    --------------
    -- Sleep_In --
@@ -132,6 +251,26 @@ package body ILI9341.Implementation is
    begin
       Send_Command (Raw.Software_Reset);
    end Software_Reset;
+
+   ----------------------
+   -- VCOM_Control_1 --
+   ----------------------
+
+   procedure VCOM_Control_1
+     (VMH : Byte;
+      VML : Byte) is
+   begin
+      Send_Command (Raw.VCOM_Control_1 (VMH, VML));
+   end VCOM_Control_1;
+
+   ----------------------
+   -- VCOM_Control_2 --
+   ----------------------
+
+   procedure VCOM_Control_2 (VMF : Byte) is
+   begin
+      Send_Command (Raw.VCOM_Control_2 (VMF));
+   end VCOM_Control_2;
 
    ------------------
    -- Write_Memory --

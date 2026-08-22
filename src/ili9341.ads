@@ -31,4 +31,18 @@ package ILI9341 is
    subtype Minus_1_To_0 is Integer range -1 .. 0;
    subtype Minus_2_To_0 is Integer range -2 .. 0;
 
+   subtype Frame_Rate_Division is Natural range 0 .. 3;
+   --  DIVA: division ratio for the internal clock (fosc) used by
+   --  Frame_Rate_Control_Normal.
+
+   subtype Frame_Rate_Clocks is Natural range 16 .. 31;
+   --  RTNA: clocks per line used by Frame_Rate_Control_Normal.
+
+   type Gamma_Curve is (Curve_1, Curve_2, Curve_4, Curve_8);
+   --  One of the 4 predefined gamma curves selectable via Gamma_Set.
+
+   subtype Gamma_Correction_Table is Byte_Array (1 .. 15);
+   --  15 gray-scale voltage adjustment points for
+   --  Positive_Gamma_Correction / Negative_Gamma_Correction.
+
 end ILI9341;
