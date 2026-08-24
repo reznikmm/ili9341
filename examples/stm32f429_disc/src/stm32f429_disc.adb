@@ -49,7 +49,7 @@ begin
    STM32.GPIO.Configure_Output (Pin => CS);
    STM32.GPIO.Set_Output (Pin => CS, Value => 1);
    STM32.GPIO.Configure_Output (Pin => DC);
-   STM32.GPIO.Set_Output (Pin => CS, Value => 1);
+   STM32.GPIO.Set_Output (Pin => DC, Value => 1);
 
    --  Reset display
    STM32.GPIO.Set_Output (Pin => RST, Value => 0);
@@ -67,7 +67,7 @@ begin
    TFT.Pixel_Format_Set (DBI => 16, DPI => 16);
 
    TFT.Sleep_Out;
-   delay 0.005;
+   delay 0.2;
    TFT.Display_On;
    TFT.Write_Memory;
 
