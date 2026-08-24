@@ -22,4 +22,10 @@ package ILI9341.Implementation_Read is
    --  driver ID) -- RDID's leading dummy byte (ILI9341.Raw.Read_ID)
    --  is already stripped.
 
+   function Read_Memory return Byte_Array;
+   --  Returns the 3 real 18-bit-expanded RGB bytes -- RAMRD's leading
+   --  dummy byte (ILI9341.Raw.Read_Memory) is already stripped. See
+   --  ILI9341.Raw.Read_Memory for the byte layout; converting to a
+   --  specific pixel type is left to the caller.
+
 end ILI9341.Implementation_Read;

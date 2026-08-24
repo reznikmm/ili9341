@@ -15,4 +15,14 @@ package body ILI9341.Implementation_Read is
       return Reply (Reply'First + 1 .. Reply'Last);
    end Read_ID;
 
+   -----------------
+   -- Read_Memory --
+   -----------------
+
+   function Read_Memory return Byte_Array is
+      Reply : constant Byte_Array := Receive_Command (Raw.Read_Memory);
+   begin
+      return Reply (Reply'First + 1 .. Reply'Last);
+   end Read_Memory;
+
 end ILI9341.Implementation_Read;

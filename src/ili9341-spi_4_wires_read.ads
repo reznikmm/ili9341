@@ -34,4 +34,7 @@ package ILI9341.SPI_4_Wires_Read is
    function Read_ID return Byte_Array;
    --  See ILI9341.Implementation_Read.Read_ID.
 
+   function Read_Memory return Byte_Array;
+   --  See ILI9341.Implementation_Read.Read_Memory.
+
 end ILI9341.SPI_4_Wires_Read;

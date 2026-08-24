@@ -37,4 +37,10 @@ package body ILI9341.SPI_4_Wires_Read is
 
    function Read_ID return Byte_Array renames Real.Read_ID;
 
+   -----------------
+   -- Read_Memory --
+   -----------------
+
+   function Read_Memory return Byte_Array renames Real.Read_Memory;
+
 end ILI9341.SPI_4_Wires_Read;
