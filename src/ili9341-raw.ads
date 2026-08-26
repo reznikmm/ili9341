@@ -30,11 +30,9 @@ package ILI9341.Raw is
       Command : Byte;
    end record;
    --  A command with no write parameters that instead reads back
-   --  Reply_Size bytes -- the read-direction counterpart of Command.
-   --  Carries no Byte_Array member of its own: unlike Command's
-   --  Parameters (known at the call site), the reply bytes only exist
-   --  once the transport has clocked them in, so the transport returns
-   --  them itself (see ILI9341.Implementation).
+   --  Reply_Size bytes.  Carries no Byte_Array member of its own. The
+   --  reply bytes only exist once the transport has clocked them in,
+   --  so the transport returns them itself.
 
    function MSB (Value : Interfaces.Unsigned_16) return Byte is
       (Byte (Value / 256)) with Static;
@@ -263,9 +261,8 @@ package ILI9341.Raw is
    function Read_ID return Read_Command is
      (Reply_Size => 4, Command => 16#04#);
    --  Reads back the module's manufacturer ID, driver version, and
-   --  driver ID. Reply_Size is 4: a leading dummy byte (clocked out
-   --  before the interface has the first real bit ready) followed by
-   --  the 3 real ID bytes -- see the ILI9341 datasheet's "Read Display
+   --  driver ID. Reply_Size is 4: a leading dummy byte followed by
+   --  the 3 real ID bytes. See the ILI9341 datasheet's "Read Display
    --  ID" section.
 
    --  Memory Read
@@ -273,13 +270,11 @@ package ILI9341.Raw is
 
    function Read_Memory return Read_Command is
      (Reply_Size => 4, Command => 16#2E#);
-   --  Reads back one pixel from the window set by
-   --  Column_Address_Set/Page_Address_Set. Reply_Size is 4: a leading
-   --  dummy byte followed by 3 bytes of 18-bit-expanded RGB -- the
-   --  panel always replies with the top 5, 6, and 5 bits of R, G, and B
-   --  respectively, each left-justified in its own byte, regardless of
-   --  the 16bpp write format Pixel_Format_Set selects. Converting that
-   --  back to RGB565 is caller-specific (byte layout only, no color
-   --  math here) -- see the ILI9341 datasheet's "Memory Read" section.
+   --  Reads back one pixel from the window set by Column_Address_Set/
+   --  Page_Address_Set. Reply_Size is 4: a leading dummy byte
+   --  followed by 3 bytes of 18-bit-expanded RGB. The panel replies
+   --  with the top 5, 6, and 5 bits of R, G, and B respectively, each
+   --  left-justified in its own byte. See the ILI9341 datasheet's
+   --  "Memory Read" section.
 
 end ILI9341.Raw;

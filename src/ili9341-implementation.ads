@@ -160,15 +160,12 @@ package ILI9341.Implementation is
    function Read_ID return Byte_Array
      with Pre => not Receive_Command_Is_Null;
    --  Returns the 3 real ID bytes (manufacturer, driver version,
-   --  driver ID) -- RDID's leading dummy byte (ILI9341.Raw.Read_ID)
-   --  is already stripped. See the formal's comment above.
+   --  driver ID).
 
    function Read_Memory return Byte_Array
      with Pre => not Receive_Command_Is_Null;
-   --  Returns the 3 real 18-bit-expanded RGB bytes -- RAMRD's leading
-   --  dummy byte (ILI9341.Raw.Read_Memory) is already stripped. See
-   --  ILI9341.Raw.Read_Memory for the byte layout; converting to a
-   --  specific pixel type is left to the caller. See the formal's
-   --  comment above.
+   --  Returns the 3 real 18-bit-expanded RGB bytes. See
+   --  ILI9341.Raw.Read_Memory for the byte layout. Converting to a
+   --  specific pixel type is left to the caller.
 
 end ILI9341.Implementation;
