@@ -10,7 +10,7 @@ package ILI9341.Raw is
    use type Interfaces.Unsigned_8;
    use type Interfaces.Unsigned_16;
 
-   subtype Parameter_Count is Natural range 0 .. 6;
+   subtype Parameter_Count is Natural range 0 .. 15;
 
    type Command (Size : Parameter_Count) is record
       Command    : Byte;
@@ -23,6 +23,7 @@ package ILI9341.Raw is
    subtype Command_3P is Command (3);
    subtype Command_4P is Command (4);
    subtype Command_5P is Command (5);
+   subtype Command_15P is Command (15);
 
    function MSB (Value : Interfaces.Unsigned_16) return Byte is
       (Byte (Value / 256)) with Static;
@@ -244,5 +245,177 @@ package ILI9341.Raw is
    --  –mode. The display module is doing self-diagnostic functions during
    --  this 5ms. It will be necessary to wait 120ms after sending Sleep In
    --  command (when in Sleep Out mode) before Sleep Out command can be sent.
+
+   --  Pump ratio control
+   --------------------------------------------------------------------------
+
+   function Pump_Ratio_Control (Ratio : Byte) return Command_1P is
+     (Size       => 1,
+      Command    => 16#F7#,
+      Parameters => [Ratio]);
+   --  Sets the ratio factor used by the step-up circuit that generates
+   --  VGH/VGL. Raw register byte -- only the opcode and framing are
+   --  modeled here; see the ILI9341 datasheet's "Pump Ratio Control"
+   --  section for the bit layout. TFT_eSPI's ILI9341/ILI9341_2 init
+   --  tables both use 16#20#.
+
+   --  Power control 1 / 2 (VRH / BT)
+   --------------------------------------------------------------------------
+
+   function Power_Control_1 (VRH : Byte) return Command_1P is
+     (Size       => 1,
+      Command    => 16#C0#,
+      Parameters => [VRH]);
+   --  Sets the GVDD reference level, which sets the grayscale voltage
+   --  level (VRH[5:0]). Raw register byte, same caveat as
+   --  Pump_Ratio_Control -- see the datasheet's "Power Control 1"
+   --  section for the VRH-to-GVDD voltage mapping.
+
+   function Power_Control_2 (BT : Byte) return Command_1P is
+     (Size       => 1,
+      Command    => 16#C1#,
+      Parameters => [BT]);
+   --  Sets the factor used by the step-up circuits (SAP[2:0]:BT[3:0]).
+   --  Raw register byte, same caveat as Power_Control_1.
+
+   --  VCOM control 1 / 2
+   --------------------------------------------------------------------------
+
+   function VCOM_Control_1
+     (VMH : Byte;
+      VML : Byte) return Command_2P is
+     (Size       => 2,
+      Command    => 16#C5#,
+      Parameters => [VMH, VML]);
+   --  Sets the VCOMH (VMH) and VCOML (VML) voltages. Raw register
+   --  bytes, same caveat as Power_Control_1.
+
+   function VCOM_Control_2 (VMF : Byte) return Command_1P is
+     (Size       => 1,
+      Command    => 16#C7#,
+      Parameters => [VMF]);
+   --  Sets the VCOM offset voltage (VMF), used for VCOM drive-ability
+   --  adjustment / flicker tuning. Raw register byte, same caveat as
+   --  Power_Control_1.
+
+   --  Memory Access Control (MADCTL)
+   --------------------------------------------------------------------------
+
+   function Memory_Access_Control
+     (MY  : Boolean := False;
+      MX  : Boolean := False;
+      MV  : Boolean := False;
+      ML  : Boolean := False;
+      BGR : Boolean := False;
+      MH  : Boolean := False) return Command_1P is
+     (Size       => 1,
+      Command    => 16#36#,
+      Parameters =>
+        [(if MY  then 16#80# else 0) +
+         (if MX  then 16#40# else 0) +
+         (if MV  then 16#20# else 0) +
+         (if ML  then 16#10# else 0) +
+         (if BGR then 16#08# else 0) +
+         (if MH  then 16#04# else 0)]);
+   --  Sets the row/column address order (MY/MX), row/column exchange
+   --  (MV, swaps width and height -- landscape vs. portrait), vertical
+   --  refresh order (ML), RGB/BGR pixel order (BGR, True selects BGR),
+   --  and horizontal refresh order (MH). Used both for screen
+   --  orientation (plan.md step 6) and to select the pixel byte order
+   --  (`Swapped` in `ESP32.ILI9341.Bitmap`, plan.md step 5).
+
+   --  Frame Rate Control (Normal Mode/Full Colors)
+   --------------------------------------------------------------------------
+
+   function Frame_Rate_Control_Normal
+     (DIVA : Frame_Rate_Division := 0;
+      RTNA : Frame_Rate_Clocks   := 27) return Command_2P is
+     (Size       => 2,
+      Command    => 16#B1#,
+      Parameters => [Byte (DIVA), Byte (RTNA)]);
+   --  DIVA selects the division ratio for the internal clock (fosc);
+   --  RTNA sets the number of clocks per line, which sets the normal
+   --  mode frame rate. Byte encoding only (raw DIVA[1:0]/RTNA[4:0]
+   --  sub-fields) -- see the ILI9341 datasheet's "Frame Rate Control"
+   --  section for the resulting Hz formula.
+
+   --  Display Function Control
+   --------------------------------------------------------------------------
+
+   function Display_Function_Control
+     (P1 : Byte;
+      P2 : Byte;
+      P3 : Byte) return Command_3P is
+     (Size       => 3,
+      Command    => 16#B6#,
+      Parameters => [P1, P2, P3]);
+   --  Sets gate driver polarity/scan direction, source/gate driver
+   --  timing, and interval-scan settings (the PT/GS/SS/SM/ISC/NL/PCDIV
+   --  bit fields spread across 3 bytes). Kept as raw register bytes
+   --  rather than decomposed -- see the ILI9341 datasheet's "Display
+   --  Function Control" section for the full bit layout.
+
+   --  Gamma control
+   --------------------------------------------------------------------------
+
+   function Gamma_Function_Enable
+     (Enable : Boolean := False) return Command_1P is
+     (Size       => 1,
+      Command    => 16#F2#,
+      Parameters => [(if Enable then 1 else 0)]);
+   --  Enables/disables gamma adjustment via the interpolated 3-gamma
+   --  curve (GC0-GC3, bit 0). When disabled, the fixed curve selected
+   --  by Gamma_Set is used directly.
+
+   function Gamma_Curve_Code (Curve : Gamma_Curve) return Byte is
+     (case Curve is
+        when Curve_1 => 16#01#,
+        when Curve_2 => 16#02#,
+        when Curve_4 => 16#04#,
+        when Curve_8 => 16#08#)
+     with Static;
+   --  Encodes the one-hot GC[3:0] curve selector per the datasheet.
+
+   function Gamma_Set (Curve : Gamma_Curve := Curve_1) return Command_1P is
+     (Size       => 1,
+      Command    => 16#26#,
+      Parameters => [Gamma_Curve_Code (Curve)]);
+   --  Selects one of the 4 predefined gamma curves.
+
+   function Positive_Gamma_Correction
+     (Table : Gamma_Correction_Table) return Command_15P is
+     (Size       => 15,
+      Command    => 16#E0#,
+      Parameters => Table);
+   --  Sets the 15 gray-scale voltage adjustment points (interpolated
+   --  between V0 and V63) of the positive-polarity gamma curve.
+
+   function Negative_Gamma_Correction
+     (Table : Gamma_Correction_Table) return Command_15P is
+     (Size       => 15,
+      Command    => 16#E1#,
+      Parameters => Table);
+   --  Sets the 15 gray-scale voltage adjustment points of the
+   --  negative-polarity gamma curve.
+
+   --  Display Inversion
+   --------------------------------------------------------------------------
+
+   function Display_Inversion_On return Command_0P is
+     (Size       => 0,
+      Command    => 16#21#,
+      Parameters => []);
+   --  Enters display inversion mode: every bit is inverted from frame
+   --  memory to the display, contents unaffected. Needed by panels
+   --  (e.g. the CYD/ESP32-2432S028R) whose glass requires
+   --  TFT_INVERSION_ON to show correct, non-inverted colors -- see
+   --  TFT_eSPI's handling of the TFT_INVERSION_ON build flag.
+
+   function Display_Inversion_Off return Command_0P is
+     (Size       => 0,
+      Command    => 16#20#,
+      Parameters => []);
+   --  Recovers from display inversion mode. Contents of frame memory
+   --  unaffected, no other status changed.
 
 end ILI9341.Raw;
