@@ -11,7 +11,22 @@ package body ILI9341.SPI_4_Wires is
    procedure Send_Command (Item : ILI9341.Raw.Command)
      with Inline;
 
-   package Real is new ILI9341.Implementation (Send_Command);
+   procedure Receive_Command
+     (Item  : ILI9341.Raw.Read_Command;
+      Reply : out Byte_Array)
+     with Inline;
+
+   package Real is new ILI9341.Implementation
+     (Send_Command             => Send_Command,
+      Receive_Command          => Receive_Command,
+      Receive_Command_Is_Null  => False);
+   --  Always False, a static literal, not Receive_Bytes_Is_Null
+   --  itself -- ILI9341.Implementation is pragma Pure, and a Pure
+   --  unit's own generic instantiations need static actuals for
+   --  formal objects (RM 4.9(5)), so a non-static generic formal like
+   --  Receive_Bytes_Is_Null cannot be threaded through here. The real
+   --  check on Receive_Bytes_Is_Null happens below, in Read_ID/
+   --  Read_Memory themselves, before they ever reach Real.
 
    ------------------------
    -- Column_Address_Set --
@@ -84,6 +99,33 @@ package body ILI9341.SPI_4_Wires is
    procedure Power_Control_B
      (PCEQ : Boolean := False;
       DRV  : Boolean := False) renames Real.Power_Control_B;
+
+   -------------
+   -- Read_ID --
+   -------------
+
+   function Read_ID return Byte_Array renames Real.Read_ID;
+
+   -----------------
+   -- Read_Memory --
+   -----------------
+
+   function Read_Memory return Byte_Array renames Real.Read_Memory;
+
+   ------------------------
+   -- Receive_Command --
+   ------------------------
+
+   procedure Receive_Command
+     (Item  : ILI9341.Raw.Read_Command;
+      Reply : out Byte_Array) is
+   begin
+      Set_Data_Or_Command (Data => False);
+      Send_Byte (Item.Command);
+      Set_Data_Or_Command (Data => True);
+      Receive_Bytes (Reply);
+      Done;
+   end Receive_Command;
 
    ------------------
    -- Send_Command --

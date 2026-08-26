@@ -12,6 +12,14 @@ with ILI9341.Raw;
 
 generic
    with procedure Send_Command (Item : ILI9341.Raw.Command);
+   with procedure Receive_Command
+     (Item  : ILI9341.Raw.Read_Command;
+      Reply : out Byte_Array) is null;
+   Receive_Command_Is_Null : Boolean := True;
+   --  A read-capable instantiation must pass a real Receive_Command
+   --  and set this to False. Read_ID/Read_Memory can otherwise send
+   --  an opcode with no reply read, and leave the panel mid-command
+   --  with no error.
 package ILI9341.Implementation is
    pragma Pure;
 
@@ -148,5 +156,16 @@ package ILI9341.Implementation is
    --  @param T2 - EQ to DDVDH
    --  @param T3 - EQ to DDVDH
    --  @param T4 - EQ to GND
+
+   function Read_ID return Byte_Array
+     with Pre => not Receive_Command_Is_Null;
+   --  Returns the 3 real ID bytes (manufacturer, driver version,
+   --  driver ID).
+
+   function Read_Memory return Byte_Array
+     with Pre => not Receive_Command_Is_Null;
+   --  Returns the 3 real 18-bit-expanded RGB bytes. See
+   --  ILI9341.Raw.Read_Memory for the byte layout. Converting to a
+   --  specific pixel type is left to the caller.
 
 end ILI9341.Implementation;

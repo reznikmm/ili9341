@@ -24,6 +24,16 @@ package ILI9341.Raw is
    subtype Command_4P is Command (4);
    subtype Command_5P is Command (5);
 
+   subtype Reply_Length is Positive range 1 .. 4;
+
+   type Read_Command (Reply_Size : Reply_Length) is record
+      Command : Byte;
+   end record;
+   --  A command with no write parameters that instead reads back
+   --  Reply_Size bytes.  Carries no Byte_Array member of its own. The
+   --  reply bytes only exist once the transport has clocked them in,
+   --  so the transport returns them itself.
+
    function MSB (Value : Interfaces.Unsigned_16) return Byte is
       (Byte (Value / 256)) with Static;
 
@@ -244,5 +254,27 @@ package ILI9341.Raw is
    --  –mode. The display module is doing self-diagnostic functions during
    --  this 5ms. It will be necessary to wait 120ms after sending Sleep In
    --  command (when in Sleep Out mode) before Sleep Out command can be sent.
+
+   --  Read Display ID
+   --------------------------------------------------------------------------
+
+   function Read_ID return Read_Command is
+     (Reply_Size => 4, Command => 16#04#);
+   --  Reads back the module's manufacturer ID, driver version, and
+   --  driver ID. Reply_Size is 4: a leading dummy byte followed by
+   --  the 3 real ID bytes. See the ILI9341 datasheet's "Read Display
+   --  ID" section.
+
+   --  Memory Read
+   --------------------------------------------------------------------------
+
+   function Read_Memory return Read_Command is
+     (Reply_Size => 4, Command => 16#2E#);
+   --  Reads back one pixel from the window set by Column_Address_Set/
+   --  Page_Address_Set. Reply_Size is 4: a leading dummy byte
+   --  followed by 3 bytes of 18-bit-expanded RGB. The panel replies
+   --  with the top 5, 6, and 5 bits of R, G, and B respectively, each
+   --  left-justified in its own byte. See the ILI9341 datasheet's
+   --  "Memory Read" section.
 
 end ILI9341.Raw;
