@@ -142,4 +142,26 @@ package body ILI9341.Implementation is
       Send_Command (Raw.Write_Memory);
    end Write_Memory;
 
+   -------------
+   -- Read_ID --
+   -------------
+
+   function Read_ID return Byte_Array is
+      Reply : Byte_Array (1 .. Raw.Read_ID.Reply_Size);
+   begin
+      Receive_Command (Raw.Read_ID, Reply);
+      return Reply (Reply'First + 1 .. Reply'Last);
+   end Read_ID;
+
+   -----------------
+   -- Read_Memory --
+   -----------------
+
+   function Read_Memory return Byte_Array is
+      Reply : Byte_Array (1 .. Raw.Read_Memory.Reply_Size);
+   begin
+      Receive_Command (Raw.Read_Memory, Reply);
+      return Reply (Reply'First + 1 .. Reply'Last);
+   end Read_Memory;
+
 end ILI9341.Implementation;

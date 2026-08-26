@@ -11,6 +11,12 @@ with System;
 generic
    with procedure Set_Data_Or_Command (Data : Boolean);
    with procedure Send_Byte (Data : Interfaces.Unsigned_8);
+   with procedure Receive_Bytes (Data : out Byte_Array) is null;
+   Receive_Bytes_Is_Null : Boolean := True;
+   --  A read-capable instantiation must pass a real Receive_Bytes and
+   --  set this to False. Read_ID/Read_Memory can otherwise send an
+   --  opcode with no reply read, and leave the panel mid-command with
+   --  no error.
    with procedure Done is null;
 package ILI9341.SPI_4_Wires is
    pragma Pure;
@@ -148,5 +154,15 @@ package ILI9341.SPI_4_Wires is
    --  @param T2 - EQ to DDVDH
    --  @param T3 - EQ to DDVDH
    --  @param T4 - EQ to GND
+
+   function Read_ID return Byte_Array
+     with Pre => not Receive_Bytes_Is_Null;
+   --  See ILI9341.Implementation.Read_ID. See the formal's comment
+   --  above.
+
+   function Read_Memory return Byte_Array
+     with Pre => not Receive_Bytes_Is_Null;
+   --  See ILI9341.Implementation.Read_Memory. See the formal's
+   --  comment above.
 
 end ILI9341.SPI_4_Wires;
